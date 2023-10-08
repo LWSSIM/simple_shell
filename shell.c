@@ -121,7 +121,7 @@ void routine(Shell_commands *input, Error_handler *error, int ac, char **av)
 * @ac: arg count
 * @av:arg vector
 *
-* Return: 0 success
+* Return: status
 */
 int main(int ac, char **av)
 {
@@ -135,5 +135,5 @@ int main(int ac, char **av)
 	/*run REPL*/
 	status = Shell_loop(&input, &error);
 
-	return (0);
+	return (status);
 }
