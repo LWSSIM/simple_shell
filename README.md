@@ -1,10 +1,8 @@
 <h1>Simple UNIX-Style Shell in C</h1>
 
-  
 
 <p>This repository contains a simple UNIX-style shell implemented in C. The shell project explores various aspects of system programming, including process management, file operations, and system calls.</p>
 
-  
 
 <h2>Key Concepts</h2>
 
@@ -40,7 +38,6 @@
 
 </ul>
 
-  
 
 <h2>Functions Used</h2>
 
@@ -304,7 +301,7 @@
 
 </table>
 
-  
+
 
 <h2>How to Build and Run</h2>
 
@@ -328,11 +325,11 @@
 
 <pre><code>./hsh</code></pre>
 
-  
+
 
 <p>Now, you can interact with the simple UNIX-style shell in your terminal.</p>
 
-  
+
 
 <h2>References</h2>
 
