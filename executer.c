@@ -58,7 +58,6 @@ int _fork(char *cmd_fp, char **input)
 		{
 			print_to_fd(2, "./hsh: process execution failed\n");
 		}
-		printf("%d errno \n", errno);
 	}
 	else
 	{
