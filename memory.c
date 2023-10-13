@@ -32,12 +32,6 @@ void free_shell(Shell_commands *input, Error_handler *error)
 	if (input->parsed_input)
 		free_str_ar(input->parsed_input);
 	input->parsed_input = NULL;
-	if (input->arg_count > 1)
-		if (input->args)
-		{
-			free_str_ar(input->args);
-		}
-	input->args = NULL;
 	if (error->exit_msg)
 		free(error->exit_msg);
 	error->exit_msg = NULL;

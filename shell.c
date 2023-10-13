@@ -14,10 +14,12 @@ int inter(Shell_commands *input, Error_handler *error)
 
 
 	do {
+		++input->loop_counter;
 		print_to_fd(1, PROMPT_MSG);
 		chars_read = _getline(&input->lineptr, &n, stdin);
 		if (chars_read == EOF) /*escape if EOF||-1*/
 		{
+			write(1, "\n", 1);
 			free_shell(input, error);
 			return (stat);
 		}
@@ -46,11 +48,15 @@ int non_inter(Shell_commands *input, Error_handler *error)
 
 
 	do {
-		chars_read = _getline(&input->lineptr, &n, stdin);
+		++input->loop_counter;
+		if (!input->file)
+			chars_read = _getline(&input->lineptr, &n, stdin);
+		else
+			chars_read = _getline(&input->lineptr, &n, input->file);
 		if (chars_read == EOF) /*escape if EOF||-1*/
 		{
 			free_shell(input, error);
-			return (stat);
+			break;
 		}
 		if (check_space(input->lineptr, chars_read))
 		{
@@ -59,6 +65,11 @@ int non_inter(Shell_commands *input, Error_handler *error)
 			free_shell(input, error);
 		}
 	} while (chars_read != EOF);
+	if (input->file)
+	{
+		close(input->fd);
+		fclose(input->file);
+	}
 	return (stat);
 }
 
@@ -73,9 +84,10 @@ int Shell_loop(Shell_commands *input, Error_handler *error)
 {
 	int status = 0;
 
+	signal(SIGINT, usr_interupt);
 	while (1)
 	{
-		if (!isatty(0))
+		if (!isatty(0) || input->arg_count > 1)
 		{
 			status = non_inter(input, error);
 			return (status);
@@ -100,17 +112,24 @@ void routine(Shell_commands *input, Error_handler *error, int ac, char **av)
 	input->args = av;
 	input->parsed_input = NULL;
 	input->lineptr = NULL;
+	input->file = 0;
+	input->loop_counter = 0;
 
-	if (ac == 1)
+	if (!isatty(0) || input->arg_count == 1)
 	{
 		input->fd = 0;
 	}
 	else
 	{
 		input->fd = open(av[1], O_RDONLY);
-		if (input->fd == -1)
+		if (access(av[1], F_OK) != 0 || input->fd == -1)
 		{
-			printf("%s: 0: Can't open %s\n", av[0], av[1]);
+			error_printer(input, error, "cannot open ");
+			exit(EXIT_FAILURE);
+		}
+		else
+		{
+			input->file = fdopen(input->fd, "r");
 		}
 	}
 	error->exit_msg = NULL;
