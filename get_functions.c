@@ -197,16 +197,17 @@ char **get_token(char *input, const char *delimiter)
 */
 int built_in_checker(Shell_commands *input, Error_handler *error)
 {
-	if (!_strcmp(input->parsed_input[0], "exit"))
+	if (!_strcmp(input->parsed[0], "exit"))
 	{
-		if (exit_routine(input, error) == 1)
-			return (0);
+		if (exit_routine(input, error))
+			return (error->exit_status);
 	}
-	else if (!_strcmp(input->parsed_input[0], "env"))
+	else if (!_strcmp(input->parsed[0], "env"))
 	{
 		print_env();
-		return (0);
+		return (error->exit_status);
 	}
 
-	return (1);
+	return (0);
 }
+

@@ -25,7 +25,7 @@ int inter(Shell_commands *input, Error_handler *error)
 		}
 		if (check_space(input->lineptr, chars_read))
 		{
-			input->parsed_input = get_token(input->lineptr, delimiter);
+			input->parsed = get_token(input->lineptr, delimiter);
 			stat = exec_process(input, error); /*create and execute new process*/
 			free_shell(input, error);
 		}
@@ -60,7 +60,7 @@ int non_inter(Shell_commands *input, Error_handler *error)
 		}
 		if (check_space(input->lineptr, chars_read))
 		{
-			input->parsed_input = get_token(input->lineptr, delimiter);
+			input->parsed = get_token(input->lineptr, delimiter);
 			stat = exec_process(input, error); /*create and execute new process*/
 			free_shell(input, error);
 		}
@@ -110,7 +110,7 @@ void routine(Shell_commands *input, Error_handler *error, int ac, char **av)
 {
 	input->arg_count = ac;
 	input->args = av;
-	input->parsed_input = NULL;
+	input->parsed = NULL;
 	input->lineptr = NULL;
 	input->file = 0;
 	input->loop_counter = 0;

@@ -34,7 +34,7 @@ typedef struct Shell_commands
 {
 	char *lineptr;
 
-	char **parsed_input;
+	char **parsed;
 
 	char **args;
 
@@ -106,5 +106,6 @@ int _strcmp(char *s1, char *s2);
 char *_strdup(char *str);
 bool _isspace(char c);
 int _putchar(char c);
+int _isdigit(int c);
 int check_space(char *str, ssize_t chars_read);
 #endif /*MAIN_H*/

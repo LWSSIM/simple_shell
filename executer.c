@@ -13,14 +13,15 @@ int exec_process(Shell_commands *input, Error_handler *error)
 
 	char *cmd_fp = NULL;
 
-	if (!built_in_checker(input, error))
-		return (0);
-	if (input->parsed_input)
+	if (built_in_checker(input, error))
+		return (error->exit_status);
+	if (input->parsed)
 	{
-		cmd_fp = _getcom(input->parsed_input[0]);
+		cmd_fp = _getcom(input->parsed[0]);
 		if (cmd_fp)
 		{
-			status = _fork(cmd_fp, input->parsed_input);
+			status = _fork(cmd_fp, input->parsed);
+			error->exit_status = status;
 			free(cmd_fp);
 			return (status);
 		}
@@ -57,10 +58,13 @@ int _fork(char *cmd_fp, char **input)
 		{
 			print_to_fd(2, "./hsh: process execution failed\n");
 		}
+		printf("%d errno \n", errno);
 	}
 	else
 	{
 		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			status = WEXITSTATUS(status);
 	}
 	return (status);
 }

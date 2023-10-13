@@ -1,50 +1,6 @@
 #include "main.h"
 
 /**
-* exit_routine - exits shell normally
-* @input: DS
-* @error: DS
-* Return: 1 if failure else exit with status
-*/
-int exit_routine(Shell_commands *input, Error_handler *error)
-{
-	int exit_status = 0;
-
-	if (input->fd > 3 && input->file)
-	{
-		close(input->fd);
-		fclose(input->file);
-	}
-	if (!_strcmp(input->parsed_input[0], "exit"))
-	{
-		if (!input->parsed_input[1])
-		{
-			exit_status = errno;
-			free_shell(input, error);
-			exit(exit_status);
-		}
-		else if (input->parsed_input[1][0] == '-')
-		{/*fix error print*/
-			error_printer(input, error, "exit: Illegal number: ");
-			return (1);
-		}
-		else
-		{
-			exit_status = atoi(input->parsed_input[1]);
-			free_shell(input, error);
-			exit(exit_status);
-		}
-	}
-	if (error->exit_status)
-	{
-		exit_status = error->exit_status;
-		free_shell(input, error);
-		exit(exit_status);
-	}
-	return (1);
-}
-
-/**
 * print_to_fd - print msg to fd
 * @str: msg
 * @fd: file descriptor number
@@ -106,7 +62,7 @@ void error_printer(Shell_commands *input, Error_handler *error, char *msg)
 	}
 	else if (!_strcmp(msg, "not found"))
 	{
-		print_to_fd(2, input->parsed_input[0]);
+		print_to_fd(2, input->parsed[0]);
 		print_to_fd(2, ": ");
 		print_to_fd(2, msg);
 		error->exit_status = 127;
@@ -114,7 +70,9 @@ void error_printer(Shell_commands *input, Error_handler *error, char *msg)
 	else if (!_strcmp(msg, "exit: Illegal number: "))
 	{
 		print_to_fd(2, msg);
-		print_to_fd(2, input->parsed_input[1]);
+		print_to_fd(2, input->parsed[1]);
+		error->exit_status = 2;
 	}
 	print_to_fd(2, "\n");
 }
+
