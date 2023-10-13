@@ -13,30 +13,22 @@ int exec_process(Shell_commands *input, Error_handler *error)
 
 	char *cmd_fp = NULL;
 
-	if (!_strcmp(input->parsed_input[0], "exit"))
+	if (built_in_checker(input, error))
+		return (error->exit_status);
+	if (input->parsed)
 	{
-		exit_routine(input, error);
-	}
-	else if (!_strcmp(input->parsed_input[0], "env"))
-	{
-		print_env();
-		return (0);
-	}
-	if (input->parsed_input)
-	{
-		cmd_fp = _getcom(input->parsed_input[0]);
+		cmd_fp = _getcom(input->parsed[0]);
 		if (cmd_fp)
 		{
-			status = _fork(cmd_fp, input->parsed_input);
+			status = _fork(cmd_fp, input->parsed);
+			error->exit_status = status;
 			free(cmd_fp);
 			return (status);
 		}
 		else
 		{
-			print_to_fd(2, "./hsh: 1: ");
-			print_to_fd(2, input->parsed_input[0]);
-			print_to_fd(2, ": not found\n");
-			return (errno);
+			error_printer(input, error, "not found");
+			return (error->exit_status);
 		}
 	}
 	return (1);
@@ -58,20 +50,33 @@ int _fork(char *cmd_fp, char **input)
 	pid = fork();
 	if (pid == -1)
 	{
-		print_to_fd(2, "./hsh: process creation failed");
+		print_to_fd(2, "./hsh: process creation failed\n");
 	}
 	else if (pid == 0)
 	{
 		if (execve(cmd_fp, input, environ) == -1)
 		{
-			print_to_fd(2, "./hsh: process execution failed");
+			print_to_fd(2, "./hsh: process execution failed\n");
 		}
 	}
 	else
 	{
 		waitpid(pid, &status, 0);
-
-		signal(SIGINT, usr_interupt);
+		if (WIFEXITED(status))
+			status = WEXITSTATUS(status);
 	}
 	return (status);
+}
+
+/**
+* usr_interupt - handle ctrl^c
+* @signal: input signal
+*/
+void usr_interupt(int signal)
+{
+	if (signal == SIGINT) /*ctrl^c check*/
+	{
+		_putchar('\n');
+		print_to_fd(1, PROMPT_MSG);
+	}
 }

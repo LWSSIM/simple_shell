@@ -34,13 +34,17 @@ typedef struct Shell_commands
 {
 	char *lineptr;
 
-	char **parsed_input;
+	char **parsed;
 
 	char **args;
+
+	int loop_counter;
 
 	int arg_count;
 
 	int fd;
+
+	FILE *file;
 
 } Shell_commands;
 
@@ -74,6 +78,7 @@ char *_getcom(char *cmd);
 char *_getenv(char *var_name);
 ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
 char **get_token(char *input, const char *delimiter);
+int built_in_checker(Shell_commands *input, Error_handler *error);
 
 /*executer.c*/
 int exec_process(Shell_commands *input, Error_handler *error);
@@ -82,8 +87,9 @@ int _fork(char *cmd_fp, char **input);
 /*printer.c---[Write str to fd]*/
 int print_to_fd(int fd, char *str);
 void usr_interupt(int signal);
-void exit_routine(Shell_commands *, Error_handler *);
+int exit_routine(Shell_commands *, Error_handler *);
 void print_env(void);
+void error_printer(Shell_commands *input, Error_handler *error, char *msg);
 
 /*memory.c---[free str]*/
 void free_str_ar(char **ar);
@@ -100,5 +106,6 @@ int _strcmp(char *s1, char *s2);
 char *_strdup(char *str);
 bool _isspace(char c);
 int _putchar(char c);
+int _isdigit(int c);
 int check_space(char *str, ssize_t chars_read);
 #endif /*MAIN_H*/

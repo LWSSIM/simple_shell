@@ -1,15 +1,15 @@
 #include "main.h"
 
 /**
- * _getline - read line from stream
- * @lineptr: ptr->line
- * @n: lenght
- * @stream: file strem
- * Description:
- * -stores address of bfr to *lineptr
- * -*lineptr and *n are updated on success
- * Return: nmbr of chars read || -1 on fail
- */
+* _getline - read line from stream
+* @lineptr: ptr->line
+* @n: lenght
+* @stream: file strem
+* Description:
+* -stores address of bfr to *lineptr
+* -*lineptr and *n are updated on success
+* Return: nmbr of chars read || -1 on fail
+*/
 ssize_t _getline(char **lineptr, size_t *n, FILE *stream)
 {
 	size_t bfrsz = 257;
@@ -49,13 +49,15 @@ ssize_t _getline(char **lineptr, size_t *n, FILE *stream)
 }
 
 /**
- * _getenv - retreives global env variable (char **env == environ)
- * @var_name: passed variable
- * Return: ptr->str (found value) || NULL
- */
+* _getenv - retreives global env variable (char **env == environ)
+
+* @var_name: passed variable
+* Return: ptr->str (found value) || NULL
+*/
 char *_getenv(char *var_name)
 {
 	int i = 0;
+
 	char *var_key, *env_copy, *var_value, *value_copy;
 
 	while (environ[i])
@@ -66,6 +68,11 @@ char *_getenv(char *var_name)
 		if (_strcmp(var_name, var_key) == 0)
 		{
 			var_value = strtok(NULL, "\0");
+			if (!var_value)
+			{
+				free(env_copy);
+				return ('\0');
+			}
 			value_copy = malloc(_strlen(var_value) + 1);
 			_strcpy(value_copy, var_value);
 			free(env_copy);
@@ -78,13 +85,14 @@ char *_getenv(char *var_name)
 }
 
 /**
- * _getcom - retreive command if found from PATH
- * @cmd: passed usr command (short)
- * Return: ptr->str (found full command in path)
- */
+* _getcom - retreive command if found from PATH
+* @cmd: passed usr command (short)
+* Return: ptr->str (found full command in path)
+*/
 char *_getcom(char *cmd)
 {
 	char *token = NULL, *cp, *command = NULL, *path = _getenv("PATH");
+
 	/*struct stat: special C structure (checker)*/
 	struct stat st;
 
@@ -95,7 +103,10 @@ char *_getcom(char *cmd)
 		return (NULL);
 	}
 	else if (*path == '\0')
+	{
 		print_to_fd(1, "NULL path");
+		return (NULL);
+	}
 	else
 	{
 		cp = _strdup(path);
@@ -127,17 +138,20 @@ char *_getcom(char *cmd)
 }
 
 /**
- * get_token - splits string into words using (strtok)
- * @input: passed input line
- * @delimiter: passed delilimiter
- * Return: array of words
- */
+* get_token - splits string into words using (strtok)
+* @input: passed input line
+* @delimiter: passed delilimiter
+* Return: array of words
+*/
 char **get_token(char *input, const char *delimiter)
 {
 	/*Count the number of words in the input string*/
 	unsigned int w_count = 0, index = 0;
+
 	char *copy = _strdup(input);
+
 	char *token = NULL;
+
 	char **words = NULL;
 
 	if (copy == NULL)
@@ -173,3 +187,27 @@ char **get_token(char *input, const char *delimiter)
 	free(copy);
 	return (words);/*free when called*/
 }
+
+/**
+* built_in_checker - check for builtins and run them
+* @input: DS
+* @error: DS
+*
+* Return: int
+*/
+int built_in_checker(Shell_commands *input, Error_handler *error)
+{
+	if (!_strcmp(input->parsed[0], "exit"))
+	{
+		if (exit_routine(input, error))
+			return (error->exit_status);
+	}
+	else if (!_strcmp(input->parsed[0], "env"))
+	{
+		print_env();
+		return (error->exit_status);
+	}
+
+	return (0);
+}
+
