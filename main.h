@@ -83,13 +83,17 @@ int built_in_checker(Shell_commands *input, Error_handler *error);
 /*executer.c*/
 int exec_process(Shell_commands *input, Error_handler *error);
 int _fork(char *cmd_fp, char **input);
+void usr_interupt(int signal);
 
 /*printer.c---[Write str to fd]*/
 int print_to_fd(int fd, char *str);
-void usr_interupt(int signal);
 int exit_routine(Shell_commands *, Error_handler *);
 void print_env(void);
 void error_printer(Shell_commands *input, Error_handler *error, char *msg);
+
+/*env_mode.c*/
+int _setenv(Shell_commands *input, Error_handler *error);
+int _unsetenv(Shell_commands *input, Error_handler *error);
 
 /*memory.c---[free str]*/
 void free_str_ar(char **ar);

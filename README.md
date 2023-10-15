@@ -325,7 +325,13 @@
 
 <pre><code>./hsh</code></pre>
 
+<ol start="5">
 
+<li>Run on non_interactive mode:</li>
+
+</ol>
+
+<pre><code>echo "command" | ./hsh</code></pre>
 
 <p>Now, you can interact with the simple UNIX-style shell in your terminal.</p>
 

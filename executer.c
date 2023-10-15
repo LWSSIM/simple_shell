@@ -13,7 +13,7 @@ int exec_process(Shell_commands *input, Error_handler *error)
 
 	char *cmd_fp = NULL;
 
-	if (built_in_checker(input, error))
+	if (built_in_checker(input, error) != -1)
 		return (error->exit_status);
 	if (input->parsed)
 	{
@@ -22,7 +22,8 @@ int exec_process(Shell_commands *input, Error_handler *error)
 		{
 			status = _fork(cmd_fp, input->parsed);
 			error->exit_status = status;
-			free(cmd_fp);
+			if (_strcmp(cmd_fp, input->parsed[0]) != 0)
+				free(cmd_fp);
 			return (status);
 		}
 		else
@@ -31,7 +32,7 @@ int exec_process(Shell_commands *input, Error_handler *error)
 			return (error->exit_status);
 		}
 	}
-	return (1);
+	return (0);
 }
 
 /**
@@ -80,3 +81,4 @@ void usr_interupt(int signal)
 		print_to_fd(1, PROMPT_MSG);
 	}
 }
+

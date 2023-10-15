@@ -33,7 +33,7 @@ int print_number(int fd, int x)
 */
 void print_env(void)
 {
-	int i;
+	unsigned int i;
 
 	for (i = 0; environ[i]; i++)
 	{
@@ -71,6 +71,16 @@ void error_printer(Shell_commands *input, Error_handler *error, char *msg)
 	{
 		print_to_fd(2, msg);
 		print_to_fd(2, input->parsed[1]);
+		error->exit_status = 2;
+	}
+	else if (!_strcmp(msg, "usage: setenv VARIABLE VALUE"))
+	{
+		print_to_fd(2, msg);
+		error->exit_status = 2;
+	}
+	else if (!_strcmp(msg, "usage: unsetenv VARIABLE"))
+	{
+		print_to_fd(2, msg);
 		error->exit_status = 2;
 	}
 	print_to_fd(2, "\n");

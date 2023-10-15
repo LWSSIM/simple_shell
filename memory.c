@@ -83,3 +83,4 @@ void free_shell(Shell_commands *input, Error_handler *error)
 		free(error->exit_msg);
 	error->exit_msg = NULL;
 }
+

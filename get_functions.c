@@ -207,7 +207,16 @@ int built_in_checker(Shell_commands *input, Error_handler *error)
 		print_env();
 		return (error->exit_status);
 	}
-
-	return (0);
+	else if (!_strcmp(input->parsed[0], "setenv"))
+	{
+		_setenv(input, error);
+		return (error->exit_status);
+	}
+	else if (!_strcmp(input->parsed[0], "unsetenv"))
+	{
+		_unsetenv(input, error);
+		return (error->exit_status);
+	}
+	return (-1);
 }
 
