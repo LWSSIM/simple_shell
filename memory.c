@@ -20,6 +20,7 @@ int exit_routine(Shell_commands *input, Error_handler *error)
 		if (!input->parsed[1])
 		{
 			free_shell(input, error);
+			free(input->current_dir);
 			exit(exit_status);
 		}
 		else if (input->parsed[1][0] == '-')
@@ -36,6 +37,7 @@ int exit_routine(Shell_commands *input, Error_handler *error)
 		{
 			exit_status = atoi(input->parsed[1]);
 			free_shell(input, error);
+			free(input->current_dir);
 			exit(exit_status);
 		}
 	}
@@ -83,4 +85,3 @@ void free_shell(Shell_commands *input, Error_handler *error)
 		free(error->exit_msg);
 	error->exit_msg = NULL;
 }
-

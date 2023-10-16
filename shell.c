@@ -1,10 +1,10 @@
 #include "main.h"
 /**
- * inter - run interactive mode
- * @input: DS
- * @error: DS
- * Return: status
- */
+* inter - run interactive mode
+* @input: DS
+* @error: DS
+* Return: status
+*/
 int inter(Shell_commands *input, Error_handler *error)
 {
 	ssize_t chars_read;
@@ -12,15 +12,17 @@ int inter(Shell_commands *input, Error_handler *error)
 	int stat = 0;
 	char delimiter[] = " \n\t";
 
-
+	signal(SIGINT, usr_interupt);
 	do {
 		++input->loop_counter;
+		print_to_fd(1, input->current_dir);
 		print_to_fd(1, PROMPT_MSG);
 		chars_read = _getline(&input->lineptr, &n, stdin);
 		if (chars_read == EOF) /*escape if EOF||-1*/
 		{
 			write(1, "\n", 1);
 			free_shell(input, error);
+			free(input->current_dir);
 			return (stat);
 		}
 		if (check_space(input->lineptr, chars_read))
@@ -34,16 +36,17 @@ int inter(Shell_commands *input, Error_handler *error)
 }
 
 /**
- * non_inter - run non_interactive mode
- * @input: DS
- * @error: DS
- * Return: status
- */
+* non_inter - run non_interactive mode
+* @input: DS
+* @error: DS
+* Return: status
+*/
 int non_inter(Shell_commands *input, Error_handler *error)
 {
 	ssize_t chars_read;
 	size_t n = 0;
 	int stat = 0;
+
 	char delimiter[] = " \n\t";
 
 
@@ -84,7 +87,6 @@ int Shell_loop(Shell_commands *input, Error_handler *error)
 {
 	int status = 0;
 
-	signal(SIGINT, usr_interupt);
 	while (1)
 	{
 		if (!isatty(0) || input->arg_count > 1)
@@ -112,8 +114,10 @@ void routine(Shell_commands *input, Error_handler *error, int ac, char **av)
 	input->args = av;
 	input->parsed = NULL;
 	input->lineptr = NULL;
+	input->current_dir = NULL;
 	input->file = 0;
 	input->loop_counter = 0;
+	input->current_dir = getcwd(NULL, 0);
 
 	if (!isatty(0) || input->arg_count == 1)
 	{

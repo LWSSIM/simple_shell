@@ -27,20 +27,6 @@ int print_number(int fd, int x)
 	buff = '0' + x;
 	return (write(fd, &buff, 1));
 }
-/**
-* print_env - print environ variable
-* Return: nothing
-*/
-void print_env(void)
-{
-	unsigned int i;
-
-	for (i = 0; environ[i]; i++)
-	{
-		print_to_fd(1, environ[i]);
-		write(1, "\n", 1);
-	}
-}
 
 /**
 * error_printer - prints appropriate error
@@ -83,6 +69,7 @@ void error_printer(Shell_commands *input, Error_handler *error, char *msg)
 		print_to_fd(2, msg);
 		error->exit_status = 2;
 	}
-	print_to_fd(2, "\n");
-}
 
+	if (msg)
+		print_to_fd(2, "\n");
+}

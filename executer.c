@@ -75,10 +75,13 @@ int _fork(char *cmd_fp, char **input)
 */
 void usr_interupt(int signal)
 {
+	char *buf;
+
 	if (signal == SIGINT) /*ctrl^c check*/
 	{
+		buf = getcwd(NULL, 0);
 		_putchar('\n');
+		print_to_fd(1, buf);
 		print_to_fd(1, PROMPT_MSG);
 	}
 }
-

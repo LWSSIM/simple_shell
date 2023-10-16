@@ -147,11 +147,7 @@ char **get_token(char *input, const char *delimiter)
 {
 	/*Count the number of words in the input string*/
 	unsigned int w_count = 0, index = 0;
-
-	char *copy = _strdup(input);
-
-	char *token = NULL;
-
+	char *copy = _strdup(input), *token = NULL;
 	char **words = NULL;
 
 	if (copy == NULL)
@@ -166,6 +162,11 @@ char **get_token(char *input, const char *delimiter)
 	}
 	w_count++; /*for NULL*/
 	free(copy);
+	if (w_count > MAX_ARGS + 1)
+	{
+		perror("too many arguments");
+		return (NULL);
+	}
 	/*Allocate memory for the array of subsequent words*/
 	words = malloc(((sizeof(char *) * w_count) + 1));
 	if (words == NULL)
@@ -217,6 +218,10 @@ int built_in_checker(Shell_commands *input, Error_handler *error)
 		_unsetenv(input, error);
 		return (error->exit_status);
 	}
+	else if (!_strcmp(input->parsed[0], "cd"))
+	{
+		change_dir(input, error);
+		return (error->exit_status);
+	}
 	return (-1);
 }
-
