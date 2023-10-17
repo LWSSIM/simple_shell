@@ -26,9 +26,12 @@ extern char **environ;
 * struct Shell_commands - structure to handle passed commands
 * @lineptr: line read from stdin
 * @args: array of entered commands
-* @parsed_input: parsed input line
+* @parsed: parsed input line
 * @arg_count: number of passed args
 * @fd: file descriptor
+* @current_dir: cwd
+* @loop_counter: count ittereation
+* @file: file stream
 */
 typedef struct Shell_commands
 {

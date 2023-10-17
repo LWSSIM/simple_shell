@@ -15,7 +15,6 @@ int inter(Shell_commands *input, Error_handler *error)
 	signal(SIGINT, usr_interupt);
 	do {
 		++input->loop_counter;
-		print_to_fd(1, input->current_dir);
 		print_to_fd(1, PROMPT_MSG);
 		chars_read = _getline(&input->lineptr, &n, stdin);
 		if (chars_read == EOF) /*escape if EOF||-1*/

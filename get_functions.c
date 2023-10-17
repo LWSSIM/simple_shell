@@ -50,7 +50,6 @@ ssize_t _getline(char **lineptr, size_t *n, FILE *stream)
 
 /**
 * _getenv - retreives global env variable (char **env == environ)
-
 * @var_name: passed variable
 * Return: ptr->str (found value) || NULL
 */
@@ -92,8 +91,6 @@ char *_getenv(char *var_name)
 char *_getcom(char *cmd)
 {
 	char *token = NULL, *cp, *command = NULL, *path = _getenv("PATH");
-
-	/*struct stat: special C structure (checker)*/
 	struct stat st;
 
 	if (!path)
@@ -118,10 +115,8 @@ char *_getcom(char *cmd)
 		if (!_strstr(cmd, "/"))
 		{/*malloc full_cmd(token + usr cmd + / + \0)*/
 			command = malloc(_strlen(token) + _strlen(cmd) + 2);
-			_strcpy(command, token);
-			_strcat(command, "/");
-			_strcat(command, cmd);
-			_strcat(command, "\0");
+			_strcpy(command, token), _strcat(command, "/");
+			_strcat(command, cmd), _strcat(command, "\0");
 		}
 		else
 			command = _strdup(cmd);
@@ -145,7 +140,6 @@ char *_getcom(char *cmd)
 */
 char **get_token(char *input, const char *delimiter)
 {
-	/*Count the number of words in the input string*/
 	unsigned int w_count = 0, index = 0;
 	char *copy = _strdup(input), *token = NULL;
 	char **words = NULL;
@@ -167,13 +161,11 @@ char **get_token(char *input, const char *delimiter)
 		perror("too many arguments");
 		return (NULL);
 	}
-	/*Allocate memory for the array of subsequent words*/
 	words = malloc(((sizeof(char *) * w_count) + 1));
 	if (words == NULL)
 	{
 		print_to_fd(2, "Memory allocation error 2");
 	}
-	/*Split the input string and store the words in the array*/
 	copy = _strdup(input);
 	token = strtok(copy, delimiter);
 	while (token != NULL)
