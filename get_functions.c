@@ -119,7 +119,7 @@ char *_getcom(char *cmd)
 			_strcat(command, cmd), _strcat(command, "\0");
 		}
 		else
-			command = _strdup(cmd);
+			command = malloc(_strlen(cmd) + 2), _strcpy(command, cmd);
 		if (stat(command, &st) == 0)
 		{
 			free(cp);

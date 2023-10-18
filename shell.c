@@ -58,6 +58,7 @@ int non_inter(Shell_commands *input, Error_handler *error)
 		if (chars_read == EOF) /*escape if EOF||-1*/
 		{
 			free_shell(input, error);
+			free(input->current_dir);
 			break;
 		}
 		if (check_space(input->lineptr, chars_read))

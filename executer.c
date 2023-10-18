@@ -21,9 +21,8 @@ int exec_process(Shell_commands *input, Error_handler *error)
 		if (cmd_fp)
 		{
 			status = _fork(cmd_fp, input->parsed);
+			free(cmd_fp);
 			error->exit_status = status;
-			if (_strcmp(cmd_fp, input->parsed[0]) != 0)
-				free(cmd_fp);
 			return (status);
 		}
 		else
@@ -82,6 +81,7 @@ void usr_interupt(int signal)
 		buf = getcwd(NULL, 0);
 		_putchar('\n');
 		print_to_fd(1, buf);
+		free(buf);
 		print_to_fd(1, PROMPT_MSG);
 	}
 }
