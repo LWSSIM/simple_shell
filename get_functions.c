@@ -96,7 +96,7 @@ char *_getcom(char *cmd)
 	if (!path)
 	{
 		if (stat(cmd, &st) == 0)
-			return (cmd);
+			return (command = malloc(_strlen(cmd) + 2), _strcpy(command, cmd));
 		return (NULL);
 	}
 	else if (*path == '\0')
