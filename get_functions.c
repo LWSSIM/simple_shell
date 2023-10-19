@@ -196,7 +196,7 @@ int built_in_checker(Shell_commands *input, Error_handler *error)
 	else if (!_strcmp(input->parsed[0], "env"))
 	{
 		print_env();
-		return (error->exit_status);
+		return (0);
 	}
 	else if (!_strcmp(input->parsed[0], "setenv"))
 	{

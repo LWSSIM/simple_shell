@@ -113,5 +113,3 @@ int change_dir(Shell_commands *input, Error_handler *error)
 	free(old_dir);
 	return (error->exit_status);
 }
-
-
