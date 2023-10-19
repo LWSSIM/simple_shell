@@ -10,16 +10,15 @@ int exit_routine(Shell_commands *input, Error_handler *error)
 {
 	int exit_status = error->exit_status;
 
-	if (input->fd > 3 && input->file)
-	{
-		close(input->fd);
-		fclose(input->file);
-	}
+
+
 	if (!_strcmp(input->parsed[0], "exit"))
 	{
 		if (!input->parsed[1])
 		{
 			free_shell(input, error);
+			if (input->file)
+				fclose(input->file);
 			free(input->current_dir);
 			exit(exit_status);
 		}
@@ -38,6 +37,8 @@ int exit_routine(Shell_commands *input, Error_handler *error)
 			exit_status = atoi(input->parsed[1]);
 			free_shell(input, error);
 			free(input->current_dir);
+			if (input->file)
+				fclose(input->file);
 			exit(exit_status);
 		}
 	}

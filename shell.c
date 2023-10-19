@@ -70,10 +70,8 @@ int non_inter(Shell_commands *input, Error_handler *error)
 		}
 	} while (chars_read != EOF);
 	if (input->file)
-	{
-		close(input->fd);
 		fclose(input->file);
-	}
+
 	return (stat);
 }
 
@@ -120,29 +118,21 @@ void routine(Shell_commands *input, Error_handler *error, int ac, char **av)
 	input->loop_counter = 0;
 	input->current_dir = getcwd(NULL, 0);
 
-	if (!isatty(0) || input->arg_count == 1)
+	if (input->arg_count > 1)
 	{
-		input->fd = 0;
-	}
-	else
-	{
-		input->fd = open(av[1], O_RDONLY);
-		if (input->fd == -1)
+		input->file = fopen(av[1], "r");
+		if (input->file == NULL)
 		{
 			if (access(av[1], F_OK) != 0)
 			{
 				error_printer(input, error, NULL);
 				print_to_fd(2, "Can't open ");
-				print_to_fd(2, input->args[1]);
+				print_to_fd(2, av[1]);
 				print_to_fd(2, "\n");
 				exit(127);
 			}
 			error_printer(input, error, "cannot open ");
 			exit(EXIT_FAILURE);
-		}
-		else
-		{
-			input->file = fdopen(input->fd, "r");
 		}
 	}
 	error->exit_msg = NULL;
