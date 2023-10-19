@@ -62,12 +62,12 @@ void error_printer(Shell_commands *input, Error_handler *error, char *msg)
 	else if (!_strcmp(msg, "usage: setenv VARIABLE VALUE"))
 	{
 		print_to_fd(2, msg);
-		error->exit_status = 2;
+		error->exit_status = 0;
 	}
 	else if (!_strcmp(msg, "usage: unsetenv VARIABLE"))
 	{
 		print_to_fd(2, msg);
-		error->exit_status = 2;
+		error->exit_status = 0;
 	}
 
 	if (msg)
