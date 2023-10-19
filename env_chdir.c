@@ -27,11 +27,11 @@ int _setenv(Shell_commands *input, Error_handler *error)
 	if (!input->parsed[1] || !input->parsed[2])
 	{
 		error_printer(input, error, "usage: setenv VARIABLE VALUE");
-		return (error->exit_status);
+		return (0);
 	}
 	else
 	{
-		if (setenv(input->parsed[1], input->parsed[2], 0) == -1)
+		if (setenv(input->parsed[1], input->parsed[2], 1) == -1)
 		{
 			error->exit_status = errno;
 			return (error->exit_status);
@@ -51,7 +51,7 @@ int _unsetenv(Shell_commands *input, Error_handler *error)
 	if (!input->parsed[1])
 	{
 		error_printer(input, error, "usage: unsetenv VARIABLE");
-		return (error->exit_status);
+		return (0);
 	}
 	else
 	{
