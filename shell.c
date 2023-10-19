@@ -129,6 +129,7 @@ void routine(Shell_commands *input, Error_handler *error, int ac, char **av)
 				print_to_fd(2, "Can't open ");
 				print_to_fd(2, av[1]);
 				print_to_fd(2, "\n");
+				free(input->current_dir);
 				exit(127);
 			}
 			error_printer(input, error, "cannot open ");
