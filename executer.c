@@ -21,7 +21,8 @@ int exec_process(Shell_commands *input, Error_handler *error)
 		if (cmd_fp)
 		{
 			status = _fork(cmd_fp, input->parsed);
-			free(cmd_fp);
+			if (cmd_fp != input->parsed[0])
+				free(cmd_fp);
 			error->exit_status = status;
 			return (status);
 		}

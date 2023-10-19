@@ -93,17 +93,15 @@ char *_getcom(char *cmd)
 	char *token = NULL, *cp, *command = NULL, *path = _getenv("PATH");
 	struct stat st;
 
-	if (!path)
+	if (path == NULL)
 	{
 		if (stat(cmd, &st) == 0)
-			return (command = malloc(_strlen(cmd) + 2), _strcpy(command, cmd));
+			return (!access(cmd, X_OK) && _strstr(cmd, "/") ? cmd : NULL);
 		return (NULL);
 	}
 	else if (*path == '\0')
-	{
-		print_to_fd(1, "NULL path");
 		return (NULL);
-	}
+
 	else
 	{
 		cp = _strdup(path);
