@@ -73,41 +73,42 @@ int _unsetenv(Shell_commands *input, Error_handler *error)
 */
 int change_dir(Shell_commands *input, Error_handler *error)
 {
-	char *dir_path, *old_dir = _strdup(input->current_dir);
+	char *dir_path = NULL, *old_dir = _strdup(input->current_dir);
 
 	if (!input->parsed[1] || !_strcmp(input->parsed[1], "~"))
 		dir_path = _getenv("HOME");
 	else if (!_strcmp(input->parsed[1], "-"))
 	{
 		dir_path = _getenv("OLDPWD");
-		print_to_fd(1, dir_path);
+		if (dir_path != NULL)
+			print_to_fd(1, dir_path);
+		else
+			print_to_fd(1, input->current_dir);
 		print_to_fd(1, "\n");
 	}
 	else if (input->parsed[1])
 		dir_path = _strdup(input->parsed[1]);
-	if (chdir(dir_path) == -1)
+	if (dir_path)
 	{
-		error->exit_status = errno;
-		error_printer(input, error, NULL);
-		print_to_fd(2, "cd: ");
-		perror(dir_path);
-		free(old_dir);
+		if (chdir(dir_path) == -1)
+		{
+			error->exit_status = errno, error_printer(input, error, NULL);
+			print_to_fd(2, "cd: can't cd to "), print_to_fd(2, dir_path);
+			print_to_fd(2, "\n"), free(old_dir), free(dir_path);
+			return (error->exit_status);
+		}
 		free(dir_path);
-		return (error->exit_status);
 	}
-	free(dir_path);
 	free(input->current_dir);
 	input->current_dir = getcwd(NULL, 0);
 	if (setenv("PWD", input->current_dir, 1) == -1)
 	{
-		error->exit_status = errno;
-		free(old_dir);
+		error->exit_status = errno, free(old_dir);
 		return (error->exit_status);
 	}
 	if (setenv("OLDPWD", old_dir, 1) == -1)
 	{
-		error->exit_status = errno;
-		free(old_dir);
+		error->exit_status = errno, free(old_dir);
 		return (error->exit_status);
 	}
 	free(old_dir);
